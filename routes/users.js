@@ -8,10 +8,9 @@ const usersController = require('../controller/users_controller');
 // Router-Controller cycle
 router.get('/sign-in', usersController.sign_in); //redirected to controller rendering sign-in page
 router.get('/sign-out', usersController.clear_session); //redirected to controller signing out user
-router.get('/profile/:id', usersController.profile); //redirected to controller signing out user
-router.post('/update-profile/:id', usersController.update_profile); //redirected to controller updating user profile
-// router.use('/appointment', require('./appointment')); //redirected to controller rendering users page
-
+router.get('/profile/:email', usersController.profile); //redirected to controller signing out user
+router.post('/update-profile/:email', usersController.update_profile); //redirected to controller updating user profile
+router.use('/hospital', require('./hospital')); //redirected to controller rendering hospital page
 router.post('/create-session', passport.authenticate(
     'local',
     { failureRedirect: '/users/sign-in' }
