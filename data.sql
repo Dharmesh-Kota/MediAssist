@@ -65,6 +65,64 @@ CREATE TABLE Hospital_Contact(
 	PRIMARY KEY (EMAIL, CONTACT)
 );
 
+--Ambulance_driver
+CREATE TABLE Ambulance_driver(
+    email VARCHAR(255) PRIMARY KEY,
+    contact_number  CHAR(10), 
+    licence  CHAR(16) NOT NULL,
+    vehicle_number VARCHAR(16) NOT NULL,
+);
+--Laboratory table
+CREATE TABLE Laboratory(
+ email VARCHAR(255) ,
+ lab_name VARCHAR(255) NOT NULL,
+ contact_number CHAR(10) ,
+ instruments VARCHAR(255),
+ email_hospital VARCHAR(255) NOT NULL,
+ FOREIGN KEY (email_hospital) REFERENCES Hospital(email)
+ PRIMARY KEY(email)
+);
+-- appointment table
+CREATE TABLE appointment (
+    appointment_id CHAR(20),
+    patient_id CHAR(12) NOT NULL,
+    doctor_reg_number VARCHAR(12) NOT NULL,
+    slot INT NOT NULL,
+    date VARCHAR(10) NOT NULL,
+    PRIMARY KEY(appointment_id),
+    FOREIGN KEY (patient_id) REFERENCES Patient(id),
+    FOREIGN KEY (doctor_reg_number) REFERENCES Doctor(doctor_reg_number)
+);
+
+-- Medicine Table
+CREATE TABLE Medicine(
+    medicine_name VARCHAR(255),
+    brand_name VARCHAR(255),
+    PRIMARY KEY(medicine_name, brand_name)
+);
+
+-- Pharmacy Table
+CREATE TABLE Pharmacy(
+    email VARCHAR(255),
+    name VARCHAR(255) NOT NULL,
+    contact CHAR(10),
+    email_hospital CHAR(255),
+    PRIMARY KEY(email),
+    FOREIGN KEY(email_hospital) REFERENCES Hospital(EMAIL)
+);
+
+-- Works Table
+CREATE TABLE works(
+    doc_reg_no VARCHAR(12),
+    email VARCHAR(12),
+    start_time TIME,
+    end_time TIME,
+    salary DECIMAL(9,2),
+    PRIMARY KEY(doc_reg_no,email),
+    FOREIGN KEY(doc_reg_no) REFERENCES Doctor(reg_no),
+    FOREIGN KEY(email) REFERENCES Hospital(EMAIL)
+);
+
 --Stores
 CREATE TABLE Stores(
     email_pharm VARCHAR(255),
