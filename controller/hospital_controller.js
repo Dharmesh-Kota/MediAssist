@@ -121,8 +121,7 @@ module.exports.cancel_appointment = async (req, res) => {
     try {
         const { id } = req.params;
         // Given the appointment id, delete the appointment from the appoints table
-        await pool.query(``);
-
+        await pool.query(`DELETE FROM appoints as appt where appt.id = 'id'`);
         req.flash('success', 'Appointment cancelled successfully');
         return res.redirect('back');
     } catch (error) {
