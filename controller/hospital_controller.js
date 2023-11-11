@@ -37,6 +37,18 @@ module.exports.register_pharma = async function(req, res){
 
 // Register a new Laboratory
 module.exports.register_lab = async function(req, res){
+<<<<<<< HEAD
+    try {
+        // You have the data in req.body and can access it like this: req.body.detail_you_want. Make an INSERT query into the Pharmacy table using this data.
+        // Write the query in the backticks below
+        await pool.query(`INSERT INTO Laboratory(email,username,name,contact,instruments,email_hospital) VALUES ($1,$2,$3,$4,$5,$6)`,[req.body.email,req.body.username,req.body.name,req.body.contact,req.body.instruments,req.body.hospital]);
+        await pool.query(`INSERT INTO Users(email,username,password,role) VALUES ($1,$2,$3,$4)`,[req.body.email,req.body.username,req.body.password,'Laboratory']);
+
+        req.flash('success', 'Laboratory added successfully');
+        return res.redirect('/');
+    } catch (error) {
+        console.log('Error: ', err);
+=======
     if(req.params.email === req.user.email){
         try {
             // You have the data in req.body and can access it like this: req.body.detail_you_want. Make an INSERT query into the Pharmacy table using this data.
@@ -51,6 +63,7 @@ module.exports.register_lab = async function(req, res){
             return res.redirect('back');
         }
     } else {
+>>>>>>> d79506cd602c50eb4ecc4b89ab2c3d97cf4a9c4b
         return res.redirect('back');
     }
 }
@@ -58,6 +71,9 @@ module.exports.register_lab = async function(req, res){
 // Render the appointments views page for the hospital
 module.exports.appointments = async (req, res) => {
     try {
+          
+        let appointment = await pool.query(``);
+           
         
         // Find out the doctors that are enrolled in the hospital using the works table
         let appointments = await pool.query(`select * from appoints where (is_pending='1')`);
@@ -110,13 +126,7 @@ module.exports.view_doctors = async (req, res) => {
     try {
         // Find out the doctors that are enrolled in the hospital using the works table. Need complete details of doctors from both
         // works as well as the doctor table.
-        let doctors = await pool.query(`with Hosp_Doc(email) as (
-                                        select doc_email
-                                        from works
-                                        where hosp_email = $1
-                                    )
-                                    select name, username, gender, qualification, experience, contact, institute, address, specialization
-                                    from doctor natural join Hosp_Doc`, [req.user.email]);
+        let doctors = await pool.query(``);
         doctors = doctors.rows;
 
         return res.render('hospital_doctors', {
@@ -129,12 +139,28 @@ module.exports.view_doctors = async (req, res) => {
     }
 }
 
-// Render the manage patients page
+// Register a new Doctor at the hospital
+module.exports.register_doctor = async (req, res) => {
+    try {
+        // You have the data in req.body and can access it like this: req.body.detail_you_want. Make an INSERT query into the Doctor table using this data.
+        // Write the query in the backticks below
+        await pool.query(`insert into doctor (REG_NO,EMAIL,USESRNAME,NAME,GENDER,QUALIFICATION,EXPERIENCE,CONTACT,INSTITUTE,ADDRESS,SPECIALIZATION) valuse ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+        [req.body.reg_no,req.body.email,req.body.username,req.body.name,req.body.name,req.body.gender,req.body.qualification,req.body.experience,req.body.contact,req.body.institute,req.body.address,req.body.specialization]);
+
+        req.flash('success', 'Doctor added successfully');
+        return res.redirect('/');
+
+    } catch (error) {
+        console.log('Error: ', error.message);
+        return res.status(500).json({ error: 'Server Error' });
+    }
+}
+
 module.exports.manage_patients = async (req, res) => {
     try {
         // Find out the patients that are enrolled in the hospital using the
         // doctors details from the appoints table.
-        let patients = await pool.query('select * from patient where email in (select patient_email from appoints where (is_pending=0) && ( doc_email in (select doc_email from works where doc_email=req.body.doc_email)))');
+        let patient = await pool.query('select * from patient where email in (select patient_email from appoints where (is_pending=0) && ( doc_email in (select doc_email from works where hosp_email=req.user.email)))');
 
         return res.render('hospital_manage_patients', {
             title: 'Manage Patients',
@@ -151,7 +177,8 @@ module.exports.cancel_appointment = async (req, res) => {
     try {
         const { id } = req.params;
         // Given the appointment id, delete the appointment from the appoints table
-        await pool.query(`delete from appoints where id= $1`, [id]);
+        await pool.query(`delete from appoints where id= req.body.id`);
+        await pool.query(`delete from appoints where id= ${id}`);
 
         req.flash('success', 'Appointment cancelled successfully');
         return res.redirect('back');
